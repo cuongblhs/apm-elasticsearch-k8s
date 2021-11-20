@@ -9,7 +9,7 @@ After applying elasticsearch on k8s need to set password for Built-in users to l
 - Access to kibana and login with _elasric_ user
 ---
 **elastic**
-A built-in superuser.\\
+A built-in superuser.  
 **kibana_system**
 The user Kibana uses to connect and communicate with Elasticsearch.
 **logstash_system**
