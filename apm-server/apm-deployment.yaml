@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apm-server
+  namespace: "apm"
+  labels:
+    app: apm-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apm-server
+  template:
+    metadata:
+      labels:
+        app: apm-server
+    spec:
+      nodeSelector:
+        app: apm
+      containers:
+        - name: apm-server
+          image: docker.elastic.co/apm/apm-server:7.15.2
+          ports:
+            - containerPort: 8200
+          volumeMounts:
+            - name: apm-config
+              mountPath: /usr/share/apm-server
+      volumes:
+        - name: apm-config
+          configMap:
+            name: apm-configmap

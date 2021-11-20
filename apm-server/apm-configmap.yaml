@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apm-configmap
+  namespace: apm
+data:
+  apm-server.yml: |
+    apm-server:
+      host: "localhost:8200"
+      rum:
+        enabled: true
+    apm-server.kibana:
+      host: "kibana:5601"
+      protocol: "http"
+      enabled: true
+    output.elasticsearch:
+      hosts: ["els-service:9200"]
+      username: "admin"
+      password: "elasticadmin"

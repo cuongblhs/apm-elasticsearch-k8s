@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: els-configmap
+  namespace: apm
+data:
+  discovery.type: "single-node"
+  xpack.security.enabled: "true"
