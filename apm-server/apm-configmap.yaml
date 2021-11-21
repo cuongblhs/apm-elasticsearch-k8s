@@ -6,14 +6,16 @@ metadata:
 data:
   apm-server.yml: |
     apm-server:
-      host: "localhost:8200"
+      host: "0.0.0.0:8200"
       rum:
         enabled: true
     apm-server.kibana:
-      host: "kibana:5601"
+      host: "kibana-service:5601"
       protocol: "http"
       enabled: true
+      username: "elastic"
+      password: "123456"
     output.elasticsearch:
       hosts: ["els-service:9200"]
-      username: "admin"
-      password: "elasticadmin"
+      username: "elastic"
+      password: "123456"

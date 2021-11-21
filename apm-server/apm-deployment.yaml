@@ -24,8 +24,18 @@ spec:
             - containerPort: 8200
           volumeMounts:
             - name: apm-config
-              mountPath: /usr/share/apm-server
+              mountPath: /usr/share/apm-server/apm-server.yml
+              readOnly: true
+              subPath: apm-server.yml
+          command: ["bash"]
+          args:
+            - "-c"
+            - |
+              ls -al /usr/share/apm-server
       volumes:
         - name: apm-config
           configMap:
             name: apm-configmap
+            # items:
+            #   - key: apm-server.yml
+            #     path: apm-server.yml
