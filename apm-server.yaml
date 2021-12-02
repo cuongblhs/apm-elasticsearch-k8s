@@ -1,3 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-service
+  namespace: "apm"
+spec:
+  ports:
+    - port: 8200
+      targetPort: 8200
+  selector:
+    app: apm-server
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apm-configmap
+  namespace: apm
+data:
+  apm-server.yml: |
+    apm-server:
+      host: "0.0.0.0:8200"
+      rum:
+        enabled: true
+    apm-server.kibana:
+      host: "kibana-service:5601"
+      protocol: "http"
+      enabled: true
+      username: "elastic"
+      password: "smartlogsvn"
+    output.elasticsearch:
+      hosts: ["els-service:9200"]
+      username: "elastic"
+      password: "smartlogsvn"
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +54,7 @@ spec:
         app: apm-server
     spec:
       nodeSelector:
-        app: apm
+        topology.kubernetes.io/zone: ap-southeast-1a
       containers:
         - name: apm-server
           image: docker.elastic.co/apm/apm-server:7.15.2

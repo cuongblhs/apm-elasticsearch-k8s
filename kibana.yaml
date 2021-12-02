@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: els-service
+  namespace: "apm"
+spec:
+  ports:
+    - port: 5601
+      targetPort: 5601
+  selector:
+    app: kibana
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-configmap
+  namespace: apm
+data:
+  kibana.yml: |
+    server.host: "0"
+    elasticsearch.hosts: ["http://els-service:9200"]
+    monitoring.ui.container.elasticsearch.enabled: true
+    elasticsearch.username: "kibana_system"
+    elasticsearch.password: "smartlogsvn"
+    xpack.security.encryptionKey: "e2Cb8DuwvohMJO9GghYbhQI3R0Ad6uv0"
+    xpack.security.session.idleTimeout: "1h"
+    xpack.security.session.lifespan: "30d"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: "apm"
+  labels:
+    app: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      nodeSelector:
+        topology.kubernetes.io/zone: ap-southeast-1a
+      containers:
+        - name: kibana
+          image: docker.elastic.co/kibana/kibana:7.15.2
+          ports:
+            - containerPort: 5601
+          volumeMounts:
+            - name: kibana-config
+              mountPath: /usr/share/kibana/config
+      volumes:
+        - name: kibana-config
+          configMap:
+            name: kibana-configmap
+            items:
+              - key: kibana.yml
+                path: kibana.yml
